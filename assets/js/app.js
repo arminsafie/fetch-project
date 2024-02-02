@@ -94,6 +94,27 @@ const sendRec = async (type, url, method = "GET") => {
   renderData(data, type);
 };
 
+const sendPostRequest = async (url, data) => {
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Server responded with ${res.status}`);
+    }
+
+    const responseData = await res.json();
+    console.log("Post request successful:", responseData);
+  } catch (error) {
+    console.error("Error sending post request:", error);
+  }
+};
+
 userBtn.addEventListener("click", () => {
   sendRec("users", "https://jsonplaceholder.typicode.com/users", "GET");
 });
@@ -106,4 +127,19 @@ postBtn.addEventListener("click", () => {
   sendRec("post", "https://jsonplaceholder.typicode.com/posts", "GET");
 });
 
-subBtn.addEventListener("click", () => {});
+subBtn.addEventListener("click", () => {
+  const nameInput = document.getElementById("name");
+  const userNameInput = document.getElementById("username");
+  const emailInput = document.getElementById("email");
+
+  const postData = {
+    name: nameInput.value,
+    userName: userNameInput.value,
+    email: emailInput.value,
+  };
+
+  const data = sendPostRequest(
+    "https://jsonplaceholder.typicode.com/posts",
+    postData
+  );
+});
